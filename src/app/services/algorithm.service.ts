@@ -23,12 +23,14 @@ export class AlgorithmService {
     const secTwoStat = combinePokemon(maleTwo, femaleTwo);
     const threeStat = combinePokemon(twoStat, secTwoStat);
 
+    this.bothUsed = false;
     const {male: maleThree, female: femaleThree} = this.choosePokemon(pokeCount, threeStat, this.invertPkmToPool(threeStat), true);
     const thirdTwoStat = combinePokemon(maleThree, femaleThree);
-    const {poolLevel2: pool1, poolLevel3: pool2} = this.createPools(threeStat, thirdTwoStat);
+    const {pool1: poolOne, pool2: poolTwo} = this.createPools(threeStat, thirdTwoStat);
 
-    const {male: maleFour, female: femaleFour} = this.choosePokemon(pokeCount, pool1, pool2);
+    const {male: maleFour, female: femaleFour} = this.choosePokemon(pokeCount, poolOne, poolTwo, true);
     const fourthTwoStat = combinePokemon(maleFour, femaleFour);
+
 
     const secThreeStat = combinePokemon(fourthTwoStat, thirdTwoStat);
     console.log(threeStat);
@@ -36,20 +38,56 @@ export class AlgorithmService {
 
     const fourStat = combinePokemon(threeStat, secThreeStat);
     console.log(fourStat);
-    console.log(pokeCount);
+
+    const {male: maleFive, female: femaleFive} = this.choosePokemon(pokeCount, fourStat, this.invertPkmToPool(fourStat));
+    const fifthTwoStat = combinePokemon(maleFive, femaleFive);
+    const {pool1: poolO, pool2: poolTw} = this.createPools(fourStat, fifthTwoStat);
+    console.log(fifthTwoStat);
+
+    const {male: maleSixth, female: femaleSixth} = this.choosePokemon(pokeCount, poolO, poolTw);
+    const SixthTwoStat = combinePokemon(maleSixth, femaleSixth);
+    console.log(SixthTwoStat);
+
+    const thirdThreeStat = combinePokemon(fifthTwoStat, SixthTwoStat);
+
+    this.bothUsed = false;
+    const {male: maleSeventh, female: femaleSeventh} =
+      this.choosePokemon(pokeCount, thirdThreeStat, this.invertPkmToPool(thirdThreeStat), true);
+    const seventhTwoStat = combinePokemon(maleSeventh, femaleSeventh);
+    const {pool1: p1, pool2: p2} = this.createPools(thirdThreeStat, seventhTwoStat);
+
+    const {male: maleEighth, female: femaleEighth} = this.choosePokemon(pokeCount, p1, p2, true);
+    const eighthTwoStat = combinePokemon(maleEighth, femaleEighth);
+
+    const fourthThreeStat = combinePokemon(seventhTwoStat, eighthTwoStat);
+
+    const fiveStat = combinePokemon(fourthThreeStat, thirdThreeStat);
+
+    console.log(fiveStat);
   }
 
-  private createPools(poolLevel3: Pokemon, poolLevel2: Pokemon) {
+  /**
+   * This function creates 2 pools for the next choosePokemon call, it also depends on the
+   * bothUsed Flag.
+   * Main usage is when a new pokemon is dependent on a 3 or 4 stat pokemon from before.
+   * It returns 2 pools.
+   * 
+   * @param pool_1 pool that gets a copy of an altered pool, always the bigger pool
+   * @param pool_2 smaller pool
+   */
+  private createPools(pool_1: Pokemon, pool_2: Pokemon) {
+    let pool1 = Object.assign({}, pool_1);
+    const pool2 = Object.assign({}, pool_2);
     if (this.bothUsed === true) {
-      poolLevel3 = this.invertPkmToPool(poolLevel3);
+      pool1 = this.invertPkmToPool(pool1);
     } else {
-      for (const key in poolLevel3) {
-        if (poolLevel3[key] && poolLevel2[key]) {
-          poolLevel3[key] = false;
+      for (const key in pool1) {
+        if (pool1[key] && pool2[key]) {
+          pool1[key] = false;
         }
       }
     }
-    return {poolLevel2, poolLevel3};
+    return {pool1, pool2};
   }
 
   /**
