@@ -10,80 +10,67 @@ export class AlgorithmService {
   female: StatCount;
   male: StatCount;
 
+  twoStatPokemon: Pokemon[] = [];
+  threeStatPokemon: Pokemon[] = [];
+  fourStatPokemon: Pokemon[] = [];
+  fiveStatPokemon: Pokemon[] = [];
+
+  wantedPokemon: Pokemon;
+
   bothUsed = false;
 
   constructor() { }
 
-  public calculate(pokeCount: PokeCount) {
+  public calculate(pokeCount: PokeCount, wantedPkmn: Pokemon) {
     let male: Pokemon;
     let female: Pokemon;
-    let pool1: Pokemon;
-    let pool2: Pokemon;
-    const twoStatPokemon: Pokemon[] = [];
-    const threeStatPokemon: Pokemon[] = [];
-    const fourStatPokemon: Pokemon[] = [];
-    const fiveStatPokemon: Pokemon[] = [];
+
+    this.wantedPokemon = wantedPkmn;
 
     ({male, female} = this.choosePokemon(pokeCount));
-    twoStatPokemon.push(combinePokemon(male, female));
+    this.twoStatPokemon.push(combinePokemon(male, female));
 
-    ({male, female} = this.choosePokemon(pokeCount, twoStatPokemon[0], this.invertPkmToPool(twoStatPokemon[0])));
-    twoStatPokemon.push(combinePokemon(male, female));
-    threeStatPokemon.push(combinePokemon(twoStatPokemon[0], twoStatPokemon[1]));
-
-    this.bothUsed = false;
-    ({male, female} = this.choosePokemon(pokeCount, threeStatPokemon[0], this.invertPkmToPool(threeStatPokemon[0]), true));
-    twoStatPokemon.push(combinePokemon(male, female));
-    ({pool1, pool2} = this.createPools(threeStatPokemon[0], twoStatPokemon[2]));
-
-    ({male, female} = this.choosePokemon(pokeCount, pool1, pool2, true));
-    twoStatPokemon.push(combinePokemon(male, female));
-
-    threeStatPokemon.push(combinePokemon(twoStatPokemon[3], twoStatPokemon[2]));
-
-    fourStatPokemon.push(combinePokemon(threeStatPokemon[0], threeStatPokemon[1]));
-
-    ({male, female} = this.choosePokemon(pokeCount, fourStatPokemon[0], this.invertPkmToPool(fourStatPokemon[0])));
-    twoStatPokemon.push(combinePokemon(male, female));
-    ({pool1, pool2} = this.createPools(fourStatPokemon[0], twoStatPokemon[4]));
-
-    ({male, female} = this.choosePokemon(pokeCount, pool1, pool2));
-    twoStatPokemon.push(combinePokemon(male, female));
-
-    threeStatPokemon.push(combinePokemon(twoStatPokemon[4], twoStatPokemon[5]));
+    ({male, female} = this.choosePokemon(pokeCount, this.twoStatPokemon[0], this.invertPkmToPool(this.twoStatPokemon[0])));
+    this.twoStatPokemon.push(combinePokemon(male, female));
+    this.threeStatPokemon.push(combinePokemon(this.twoStatPokemon[0], this.twoStatPokemon[1]));
 
     this.bothUsed = false;
-    ({male, female} = this.choosePokemon(pokeCount, threeStatPokemon[2], this.invertPkmToPool(threeStatPokemon[2]), true));
-    twoStatPokemon.push(combinePokemon(male, female));
-    ({pool1, pool2} = this.createPools(threeStatPokemon[2], twoStatPokemon[6]));
+    this.createThreeStatPokemon(pokeCount, this.threeStatPokemon[0], true);
 
-    ({male, female} = this.choosePokemon(pokeCount, pool1, pool2, true));
-    twoStatPokemon.push(combinePokemon(male, female));
+    this.fourStatPokemon.push(combinePokemon(this.threeStatPokemon[0], this.threeStatPokemon[1]));
 
-    threeStatPokemon.push(combinePokemon(twoStatPokemon[6], twoStatPokemon[7]));
+    this.createThreeStatPokemon(pokeCount, this.fourStatPokemon[0]);
 
-    fiveStatPokemon.push(combinePokemon(threeStatPokemon[3], threeStatPokemon[2]));
+    this.bothUsed = false;
+    this.createThreeStatPokemon(pokeCount, this.threeStatPokemon[2], true, this.fourStatPokemon[0]);
 
-    console.log(fiveStatPokemon);
+    this.fourStatPokemon.push(combinePokemon(this.threeStatPokemon[3], this.threeStatPokemon[2]));
+
+    this.fiveStatPokemon.push(combinePokemon(this.fourStatPokemon[0], this.fourStatPokemon[1]));
+
+    console.log(this.twoStatPokemon);
+    console.log(this.threeStatPokemon);
+    console.log(this.fourStatPokemon);
+    console.log(this.fiveStatPokemon);
   }
 
-  private createThreeStatPokemon(pokeCount: PokeCount, pokemon: Pokemon, bothPools = false) {
+  private createThreeStatPokemon(pokeCount: PokeCount, pokemon: Pokemon, bothPools = false, exception: Pokemon = null): void {
     let male: Pokemon;
     let female: Pokemon;
-    const twoStatPokemon: Pokemon[] = [];
-    const threeStatPokemon: Pokemon[] = [];
+    const twoStat: Pokemon[] = [];
+    const threeStat: Pokemon[] = [];
 
     this.bothUsed = false;
-    ({male, female} = this.choosePokemon(pokeCount, pokemon, this.invertPkmToPool(pokemon), bothPools));
-    twoStatPokemon.push(combinePokemon(male, female));
-    const {pool1, pool2} = this.createPools(pokemon, twoStatPokemon[0]);
+    ({male, female} = this.choosePokemon(pokeCount, pokemon, this.invertPkmToPool(pokemon, exception), bothPools));
+    twoStat.push(combinePokemon(male, female));
+    const {pool1, pool2} = this.createPools(pokemon, twoStat[0]);
 
     ({male, female} = this.choosePokemon(pokeCount, pool1, pool2, bothPools));
-    twoStatPokemon.push(combinePokemon(male, female));
+    twoStat.push(combinePokemon(male, female));
 
-    threeStatPokemon.push(combinePokemon(twoStatPokemon[0], twoStatPokemon[1]));
-
-    return {threeStatPokemon, twoStatPokemon};
+    threeStat.push(combinePokemon(twoStat[0], twoStat[1]));
+    this.twoStatPokemon.push(...twoStat);
+    this.threeStatPokemon.push(...threeStat);
   }
 
   /**
@@ -91,7 +78,7 @@ export class AlgorithmService {
    * bothUsed Flag.
    * Main usage is when a new pokemon is dependent on a 3 or 4 stat pokemon from before.
    * It returns 2 pools.
-   * 
+   *
    * @param pool_1 pool that gets a copy of an altered pool, always the bigger pool
    * @param pool_2 smaller pool
    */
@@ -100,6 +87,11 @@ export class AlgorithmService {
     const pool2 = Object.assign({}, pool_2);
     if (this.bothUsed === true) {
       pool1 = this.invertPkmToPool(pool1);
+      for (const key in pool1) {
+          if (pool1[key] && pool2[key]) {
+            pool1[key] = false;
+          }
+        }
     } else {
       for (const key in pool1) {
         if (pool1[key] && pool2[key]) {
@@ -158,16 +150,28 @@ export class AlgorithmService {
       }
       // This case happens if the pokemon is allowed to have 2 parents from the already set pool
       if (bothPools) {
+        // Case when no pokemon is in the already set pool group
         if (!(alreadySetStatFemale.filter((x) => x.pokeStat === this.female.pokeStat).length > 0) &&
           !(alreadySetStatMale.filter((x) => x.pokeStat === this.male.pokeStat).length > 0)) {
 
             this.movePools(unsetStatFemale, unsetStatMale, pokeCount);
+        // Case when both are in the already set pool group, which is ok
         } else if ((alreadySetStatFemale.filter((x) => x.pokeStat === this.female.pokeStat).length > 0) &&
           (alreadySetStatMale.filter((x) => x.pokeStat === this.male.pokeStat).length > 0)) {
 
-            this.bothUsed = true;
+            // Case if both have the same stat
+            if (this.female.pokeStat === this.male.pokeStat) {
+              this.chooseNextHighestIfEqual(pokeCount);
+              // Check again if both are still in the same pool group
+              if ((alreadySetStatFemale.filter((x) => x.pokeStat === this.female.pokeStat).length > 0) &&
+                (alreadySetStatMale.filter((x) => x.pokeStat === this.male.pokeStat).length > 0)) {
+                  this.bothUsed = true;
+                }
+            // Case if both are in the same group and don't have the same stat
+            } else {
+              this.bothUsed = true;
+            }
         }
-        this.chooseNextHighestIfEqual(pokeCount);
      // This case happens if a pokemon has 2 parents in the already set pool, than one gets moved to the other pool
      } else if (alreadySetStatFemale.filter((x) => x.pokeStat === this.female.pokeStat).length > 0 &&
       alreadySetStatMale.filter((x) => x.pokeStat === this.male.pokeStat).length > 0) {
@@ -279,7 +283,7 @@ export class AlgorithmService {
   /**
    * Function that creates Pokemon with inverted stats, this is to have it easier to create pools.
    */
-  private invertPkmToPool(pkmn: Pokemon): Pokemon {
+  private invertPkmToPool(pkmn: Pokemon, exception: Pokemon = null): Pokemon {
     if (pkmn === null) {
       return null;
     }
@@ -287,6 +291,15 @@ export class AlgorithmService {
     for (let p in pkmn) {
       if (pkmn.hasOwnProperty(p)) {
         ret[p] = !pkmn[p];
+      }
+    }
+    if (exception) {
+      for (let p in ret) {
+        if (pkmn.hasOwnProperty(p)) {
+          if (!exception[p] && ret[p]) {
+            ret[p] = false;
+          }
+        }
       }
     }
     return ret;

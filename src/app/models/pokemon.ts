@@ -28,5 +28,5 @@ export function combinePokemon(pokemonOne: Pokemon, pokemonTwo: Pokemon): Pokemo
         SpA: pokemonOne.SpA || pokemonTwo.SpA,
         SpD: pokemonOne.SpD || pokemonTwo.SpD,
         Ini: pokemonOne.Ini || pokemonTwo.Ini,
-    }
-}
+    };
+};
