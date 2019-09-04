@@ -63,6 +63,27 @@ export class AlgorithmService {
     threeStatPokemon.push(combinePokemon(twoStatPokemon[6], twoStatPokemon[7]));
 
     fiveStatPokemon.push(combinePokemon(threeStatPokemon[3], threeStatPokemon[2]));
+
+    console.log(fiveStatPokemon);
+  }
+
+  private createThreeStatPokemon(pokeCount: PokeCount, pokemon: Pokemon, bothPools = false) {
+    let male: Pokemon;
+    let female: Pokemon;
+    const twoStatPokemon: Pokemon[] = [];
+    const threeStatPokemon: Pokemon[] = [];
+
+    this.bothUsed = false;
+    ({male, female} = this.choosePokemon(pokeCount, pokemon, this.invertPkmToPool(pokemon), bothPools));
+    twoStatPokemon.push(combinePokemon(male, female));
+    const {pool1, pool2} = this.createPools(pokemon, twoStatPokemon[0]);
+
+    ({male, female} = this.choosePokemon(pokeCount, pool1, pool2, bothPools));
+    twoStatPokemon.push(combinePokemon(male, female));
+
+    threeStatPokemon.push(combinePokemon(twoStatPokemon[0], twoStatPokemon[1]));
+
+    return {threeStatPokemon, twoStatPokemon};
   }
 
   /**
@@ -259,6 +280,9 @@ export class AlgorithmService {
    * Function that creates Pokemon with inverted stats, this is to have it easier to create pools.
    */
   private invertPkmToPool(pkmn: Pokemon): Pokemon {
+    if (pkmn === null) {
+      return null;
+    }
     const ret = Object.assign({}, pkmn);
     for (let p in pkmn) {
       if (pkmn.hasOwnProperty(p)) {
