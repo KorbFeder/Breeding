@@ -14,13 +14,18 @@ export class AppComponent {
   constructor(private algorithm: AlgorithmService) {
     const pokemon: Pokemon = {
       HP: true,
-      Atk: false,
+      Atk: true,
       Def: true,
       SpA: true,
       SpD: true,
       Ini: true
     };
     const poke = createPokeCount(1, 2, 3, 4, 9, 1, 0, 1, 0, 2, 9, 4);
-    algorithm.calculate(poke, pokemon);
+    const ret = algorithm.calculate(poke, pokemon);
+    console.log(ret.twoStat);
+    console.log(ret.threeStat);
+    console.log(ret.fourStat);
+    console.log(ret.fiveStat);
+    console.log(ret.sixStat);
   }
 }
