@@ -15,55 +15,54 @@ export class AlgorithmService {
   constructor() { }
 
   public calculate(pokeCount: PokeCount) {
-    const {male: maleOne, female: femaleOne} = this.choosePokemon(pokeCount);
-    const twoStat = combinePokemon(maleOne, femaleOne);
-    const invTwoStat = this.invertPkmToPool(twoStat);
+    let male: Pokemon;
+    let female: Pokemon;
+    let pool1: Pokemon;
+    let pool2: Pokemon;
+    const twoStatPokemon: Pokemon[] = [];
+    const threeStatPokemon: Pokemon[] = [];
+    const fourStatPokemon: Pokemon[] = [];
+    const fiveStatPokemon: Pokemon[] = [];
 
-    const {male: maleTwo, female: femaleTwo} = this.choosePokemon(pokeCount, twoStat, invTwoStat);
-    const secTwoStat = combinePokemon(maleTwo, femaleTwo);
-    const threeStat = combinePokemon(twoStat, secTwoStat);
+    ({male, female} = this.choosePokemon(pokeCount));
+    twoStatPokemon.push(combinePokemon(male, female));
 
-    this.bothUsed = false;
-    const {male: maleThree, female: femaleThree} = this.choosePokemon(pokeCount, threeStat, this.invertPkmToPool(threeStat), true);
-    const thirdTwoStat = combinePokemon(maleThree, femaleThree);
-    const {pool1: poolOne, pool2: poolTwo} = this.createPools(threeStat, thirdTwoStat);
-
-    const {male: maleFour, female: femaleFour} = this.choosePokemon(pokeCount, poolOne, poolTwo, true);
-    const fourthTwoStat = combinePokemon(maleFour, femaleFour);
-
-
-    const secThreeStat = combinePokemon(fourthTwoStat, thirdTwoStat);
-    console.log(threeStat);
-    console.log(secThreeStat);
-
-    const fourStat = combinePokemon(threeStat, secThreeStat);
-    console.log(fourStat);
-
-    const {male: maleFive, female: femaleFive} = this.choosePokemon(pokeCount, fourStat, this.invertPkmToPool(fourStat));
-    const fifthTwoStat = combinePokemon(maleFive, femaleFive);
-    const {pool1: poolO, pool2: poolTw} = this.createPools(fourStat, fifthTwoStat);
-    console.log(fifthTwoStat);
-
-    const {male: maleSixth, female: femaleSixth} = this.choosePokemon(pokeCount, poolO, poolTw);
-    const SixthTwoStat = combinePokemon(maleSixth, femaleSixth);
-    console.log(SixthTwoStat);
-
-    const thirdThreeStat = combinePokemon(fifthTwoStat, SixthTwoStat);
+    ({male, female} = this.choosePokemon(pokeCount, twoStatPokemon[0], this.invertPkmToPool(twoStatPokemon[0])));
+    twoStatPokemon.push(combinePokemon(male, female));
+    threeStatPokemon.push(combinePokemon(twoStatPokemon[0], twoStatPokemon[1]));
 
     this.bothUsed = false;
-    const {male: maleSeventh, female: femaleSeventh} =
-      this.choosePokemon(pokeCount, thirdThreeStat, this.invertPkmToPool(thirdThreeStat), true);
-    const seventhTwoStat = combinePokemon(maleSeventh, femaleSeventh);
-    const {pool1: p1, pool2: p2} = this.createPools(thirdThreeStat, seventhTwoStat);
+    ({male, female} = this.choosePokemon(pokeCount, threeStatPokemon[0], this.invertPkmToPool(threeStatPokemon[0]), true));
+    twoStatPokemon.push(combinePokemon(male, female));
+    ({pool1, pool2} = this.createPools(threeStatPokemon[0], twoStatPokemon[2]));
 
-    const {male: maleEighth, female: femaleEighth} = this.choosePokemon(pokeCount, p1, p2, true);
-    const eighthTwoStat = combinePokemon(maleEighth, femaleEighth);
+    ({male, female} = this.choosePokemon(pokeCount, pool1, pool2, true));
+    twoStatPokemon.push(combinePokemon(male, female));
 
-    const fourthThreeStat = combinePokemon(seventhTwoStat, eighthTwoStat);
+    threeStatPokemon.push(combinePokemon(twoStatPokemon[3], twoStatPokemon[2]));
 
-    const fiveStat = combinePokemon(fourthThreeStat, thirdThreeStat);
+    fourStatPokemon.push(combinePokemon(threeStatPokemon[0], threeStatPokemon[1]));
 
-    console.log(fiveStat);
+    ({male, female} = this.choosePokemon(pokeCount, fourStatPokemon[0], this.invertPkmToPool(fourStatPokemon[0])));
+    twoStatPokemon.push(combinePokemon(male, female));
+    ({pool1, pool2} = this.createPools(fourStatPokemon[0], twoStatPokemon[4]));
+
+    ({male, female} = this.choosePokemon(pokeCount, pool1, pool2));
+    twoStatPokemon.push(combinePokemon(male, female));
+
+    threeStatPokemon.push(combinePokemon(twoStatPokemon[4], twoStatPokemon[5]));
+
+    this.bothUsed = false;
+    ({male, female} = this.choosePokemon(pokeCount, threeStatPokemon[2], this.invertPkmToPool(threeStatPokemon[2]), true));
+    twoStatPokemon.push(combinePokemon(male, female));
+    ({pool1, pool2} = this.createPools(threeStatPokemon[2], twoStatPokemon[6]));
+
+    ({male, female} = this.choosePokemon(pokeCount, pool1, pool2, true));
+    twoStatPokemon.push(combinePokemon(male, female));
+
+    threeStatPokemon.push(combinePokemon(twoStatPokemon[6], twoStatPokemon[7]));
+
+    fiveStatPokemon.push(combinePokemon(threeStatPokemon[3], threeStatPokemon[2]));
   }
 
   /**
