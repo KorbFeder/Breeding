@@ -34,6 +34,14 @@ export class AlgorithmService {
     this.wantedPokemon = wantedPkmn;
     const count = this.wantedPokemonCount();
 
+    // Since the service is a singleton, it needs to be initialized again.
+    this.twoStatPokemon = [];
+    this.threeStatPokemon = [];
+    this.fourStatPokemon = [];
+    this.fiveStatPokemon = [];
+    this.sixStatPokemon = [];
+    this.bothUsed = false;
+
     switch (count) {
       case 1:
         break;
@@ -107,16 +115,21 @@ export class AlgorithmService {
     const twoStat: Pokemon[] = [];
     const threeStat: Pokemon[] = [];
 
-    this.bothUsed = false;
-    ({male, female} = this.choosePokemon(pokeCount, pokemon, this.invertPkmToPool(pokemon, exception), bothPools));
-    twoStat.push(combinePokemon(male, female));
-    const {pool1, pool2} = this.createPools(pokemon, twoStat[0]);
 
     // This case is if the three stat to be created is the first pokemon (no dependencies)
     if (pokemon === null) {
-      ({male, female} = this.choosePokemon(pokeCount, this.twoStatPokemon[0], this.invertPkmToPool(this.twoStatPokemon[0])));
+
+      ({male, female} = this.choosePokemon(pokeCount, pokemon, this.invertPkmToPool(pokemon, exception), bothPools));
+      twoStat.push(combinePokemon(male, female));
+
+      ({male, female} = this.choosePokemon(pokeCount, twoStat[0], this.invertPkmToPool(twoStat[0])));
       twoStat.push(combinePokemon(male, female));
     } else {
+      this.bothUsed = false;
+      ({male, female} = this.choosePokemon(pokeCount, pokemon, this.invertPkmToPool(pokemon, exception), bothPools));
+      twoStat.push(combinePokemon(male, female));
+      const {pool1, pool2} = this.createPools(pokemon, twoStat[0]);
+
       ({male, female} = this.choosePokemon(pokeCount, pool1, pool2, bothPools));
       twoStat.push(combinePokemon(male, female));
     }
@@ -182,10 +195,13 @@ export class AlgorithmService {
   private choosePokemon(pokeCount: PokeCount, statRestrFirst: Pokemon = null, statRestrSec: Pokemon = null, bothPools: boolean = false) {
     // Removes unwanted stats
     if (this.wantedPokemon) {
-      for (let i = 0; i < pokeCount.male.length; i++) {
-        if (this.wantedPokemon[pokeCount.male[i].pokeStat] === false) {
-          pokeCount.male.splice(i, 1);
-          pokeCount.female.splice(i, 1);
+      for (const property in this.wantedPokemon) {
+        if (this.wantedPokemon[property] === false) {
+          const index = pokeCount.female.findIndex(stat => stat.pokeStat === property);
+          if (index > -1) {
+            pokeCount.male.splice(index, 1);
+            pokeCount.female.splice(index, 1);
+          }
         }
       }
     }

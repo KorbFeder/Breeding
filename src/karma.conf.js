@@ -20,6 +20,10 @@ module.exports = function (config) {
       reports: ['html', 'lcovonly', 'text-summary'],
       fixWebpackSourcePaths: true
     },
+    browserConsoleLogOptions: {
+      terminal: true,
+      level: ""
+    },
     reporters: ['progress', 'kjhtml'],
     port: 9876,
     colors: true,
