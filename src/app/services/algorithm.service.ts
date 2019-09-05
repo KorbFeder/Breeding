@@ -132,6 +132,7 @@ export class AlgorithmService {
 
       ({male, female} = this.choosePokemon(pokeCount, twoStat[0], this.invertPkmToPool(twoStat[0])));
       twoStat.push(combinePokemon(male, female));
+    // Standard case if there is already at least one higher stat pokemon
     } else {
       this.bothUsed = false;
       ({male, female} = this.choosePokemon(pokeCount, pokemon, this.invertPkmToPool(pokemon, exception), bothPools));
