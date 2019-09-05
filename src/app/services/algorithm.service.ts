@@ -22,6 +22,14 @@ export class AlgorithmService {
 
   constructor() { }
 
+  /**
+   * Function that calculates the breeding of a pokemon.
+   * Depending on the wantedPkmn, there will be breeders used accordingly.
+   * Returns an object which holds all 6 arrays of bred pokemon.
+   * 
+   * @param pokeCount The amount of breeders available
+   * @param wantedPkmn The Pokemon wanted to be created
+   */
   public calculate(pokeCount: PokeCount, wantedPkmn: Pokemon) {
     this.wantedPokemon = wantedPkmn;
     const count = this.wantedPokemonCount();
@@ -84,6 +92,15 @@ export class AlgorithmService {
     };
   }
 
+  /**
+   * Function that creates a three stat pokemon. It will return the 3 stat and 2 two stat pokemon over the twoStatPokemon and
+   * threeStatPokemon class object.
+   *
+   * @param pokeCount The amount of currently available breeders
+   * @param pokemon The pokemon, from which this is directly dependable from
+   * @param bothPools Flag, that allows to take 2 Pokemon from the already set pool
+   * @param exception if there is a another four/five stat pokemon that has to be taken into consideration
+   */
   private createThreeStatPokemon(pokeCount: PokeCount, pokemon: Pokemon = null, bothPools = false, exception: Pokemon = null): void {
     let male: Pokemon;
     let female: Pokemon;
@@ -95,6 +112,7 @@ export class AlgorithmService {
     twoStat.push(combinePokemon(male, female));
     const {pool1, pool2} = this.createPools(pokemon, twoStat[0]);
 
+    // This case is if the three stat to be created is the first pokemon (no dependencies)
     if (pokemon === null) {
       ({male, female} = this.choosePokemon(pokeCount, this.twoStatPokemon[0], this.invertPkmToPool(this.twoStatPokemon[0])));
       twoStat.push(combinePokemon(male, female));
@@ -235,6 +253,10 @@ export class AlgorithmService {
     }
     this.male.count--;
     this.female.count--;
+
+    if (this.female.count < 0 || this.male.count < 0) {
+      throw Error('no more breeders');
+    }
     return {male: createPokemon(this.male.pokeStat), female: createPokemon(this.female.pokeStat)};
 
   }
@@ -350,6 +372,10 @@ export class AlgorithmService {
     return ret;
   }
 
+  /**
+   * Function, that counts the properties of the wanted Pokemon object.
+   * This function is to determinate the case in which the calculate function later goes.
+   */
   private wantedPokemonCount() {
     let count = 0;
     for (let p in this.wantedPokemon) {

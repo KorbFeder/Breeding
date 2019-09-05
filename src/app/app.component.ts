@@ -21,7 +21,12 @@ export class AppComponent {
       Ini: true
     };
     const poke = createPokeCount(1, 2, 3, 4, 9, 1, 0, 1, 0, 2, 9, 4);
-    const ret = algorithm.calculate(poke, pokemon);
+    let ret;
+    try {
+      ret = algorithm.calculate(poke, pokemon);
+    } catch (e) {
+      console.log('exception, no more breeders');
+    }
     console.log(ret.twoStat);
     console.log(ret.threeStat);
     console.log(ret.fourStat);
