@@ -17,7 +17,7 @@ export interface PokeCount {
     female: StatCount[];
 }
 
-export function createPokeCount(mHp, mAtk, mDef, mSpa, mSpd, mIni, fHp, fAtk, fDef, fSpa, fSpd, fIni): PokeCount {
+export function createPokeCount(mHp?, mAtk?, mDef?, mSpa?, mSpd?, mIni?, fHp?, fAtk?, fDef?, fSpa?, fSpd?, fIni?): PokeCount {
     return {
         male: [
             {

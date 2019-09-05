@@ -12,7 +12,58 @@ describe('AlgorithmService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('return what is asked for', () => {
+  it('breeder counting', () => {
+    let err = false;
+    for (let i = 0; i < 100; i++) {
+      const service: AlgorithmService = TestBed.get(AlgorithmService);
+      const BreederCount = [];
+      let availableMale = 0;
+      let availableFemale = 0;
+      for (let i = 0; i < 12; i++) {
+        const count = Math.ceil(Math.random() * 10);
+        BreederCount.push(count);
+        if (i <= 5) {
+          availableMale += count;
+        } else {
+          availableFemale += count;
+        }
+      }
+      const pokemon: Pokemon = {
+        HP: true,
+        Atk: true,
+        Def: true,
+        SpA: true,
+        SpD: true,
+        Ini: true
+      };
+      let ret;
+      try {
+        ret = service.calculate(createPokeCount(...BreederCount), pokemon);
+      } catch (e) {
+        if (e.message === 'no more breeders') {
+          console.log(...BreederCount);
+          console.log('available female: ' + availableFemale);
+          console.log('available male: ' + availableMale);
+          console.log('current iteration: ' + i);
+          if (availableFemale >= 20 && availableMale >= 20) {
+            err = true;
+            break;
+          }
+        } else {
+          console.log(...BreederCount);
+          console.log({e});
+          console.log('current iteration: ' + i);
+          console.log('different error was thrown: ' + e.message);
+          err = true;
+          break;
+        }
+      }
+    }
+
+    expect(!err).toBeTruthy();
+  });
+
+  it('returned right wanted pokemon', () => {
     let endResult = true;
     for (let i = 0; i < 100; i++) {
       const service: AlgorithmService = TestBed.get(AlgorithmService);

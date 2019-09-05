@@ -30,7 +30,14 @@ export class AlgorithmService {
    * @param pokeCount The amount of breeders available
    * @param wantedPkmn The Pokemon wanted to be created
    */
-  public calculate(pokeCount: PokeCount, wantedPkmn: Pokemon) {
+  public calculate(pokeCount: PokeCount, wantedPkmn: Pokemon): {
+    twoStat: Pokemon[],
+    threeStat: Pokemon[],
+    fourStat: Pokemon[],
+    fiveStat: Pokemon[],
+    sixStat: Pokemon[],
+    count: PokeCount
+} {
     this.wantedPokemon = wantedPkmn;
     const count = this.wantedPokemonCount();
 
@@ -96,7 +103,8 @@ export class AlgorithmService {
       threeStat: this.threeStatPokemon,
       fourStat: this.fourStatPokemon,
       fiveStat: this.fiveStatPokemon,
-      sixStat: this.sixStatPokemon
+      sixStat: this.sixStatPokemon,
+      count: pokeCount
     };
   }
 
@@ -326,6 +334,7 @@ export class AlgorithmService {
     movedToPoolMale = movedToPoolMale.filter(x => x.pokeStat !== this.male.pokeStat);
 
     // Take the highest value from the other pool
+    // Todo -> null check
     if (movedToPoolFemale[0].count > movedToPoolMale[0].count) {
       this.female = movedToPoolFemale[0];
     } else if (movedToPoolFemale[0].count < movedToPoolMale[0].count) {
