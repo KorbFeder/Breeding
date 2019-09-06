@@ -9,6 +9,14 @@ import { Pokemon } from './models/pokemon';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+  public bredPokemon: {
+      twoStat: Pokemon[],
+      threeStat: Pokemon[],
+      fourStat: Pokemon[],
+      fiveStat: Pokemon[],
+      sixStat: Pokemon[],
+      count: PokeCount
+  };
 
   constructor(private algorithm: AlgorithmService) {
 
@@ -37,5 +45,7 @@ export class AppComponent {
   public calculate(result: {pokeCount: PokeCount, pokemon: Pokemon}) {
     console.log(result.pokeCount);
     console.log(result.pokemon);
+    this.bredPokemon = this.algorithm.calculate(result.pokeCount, result.pokemon);
+    console.log(this.bredPokemon);
   }
 }
