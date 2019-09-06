@@ -1,26 +1,55 @@
 <form [formGroup]=statsForm (ngSubmit)="saveStats(statsForm.value)">
   <div class="row">
-    <div class="col-sm">
-      <h3>Female:</h3>
+    <div class="col-sm-2 border female-container">
+      <h4>Female breeder count:</h4>
       <div class="form-group row" *ngFor="let stat of pokeCount.female">
-        <label for="female{{stat.pokeStat}}Input" class="col-sm-2 col-from-label">{{stat.pokeStat}}</label> 
-        <div class="col-sm-10">
-          <input type="number" class="form-control" id="female{{stat.pokeStat}}Input" placeholder="enter amount" formControlName="female{{stat?.pokeStat}}" required>
+        <label for="female{{stat.pokeStat}}Input" class="col-sm-2 col-from-label">{{stat.pokeStat}}</label>
+        <div class="col-sm-9">
+          <input type="number" class="form-control form-control-sm" id="female{{stat.pokeStat}}Input"
+            placeholder="enter amount" formControlName="female{{stat?.pokeStat}}" required>
           <div class="invalid-input" *ngIf="!isValidInput('female' + stat.pokeStat)">Please Enter a Number!</div>
         </div>
       </div>
     </div>
-    <div class="col-sm">
-      <h3>Male:</h3>
+    <div class="col-sm-2 border">
+      <h4>Male breeder count:</h4>
       <div class="form-group row" *ngFor="let stat of pokeCount.male">
-        <label for="male{{stat.pokeStat}}Input" class="col-sm-2 col-from-label">{{stat.pokeStat}}</label> 
-        <div class="col-sm-10">
-          <input type="number" class="form-control" id="male{{stat.pokeStat}}Input" placeholder="enter amount" formControlName="male{{stat?.pokeStat}}" required>
+        <label for="male{{stat.pokeStat}}Input" class="col-sm-2 col-from-label">{{stat.pokeStat}}</label>
+        <div class="col-sm-9">
+          <input type="number" class="form-control form-control-sm" id="male{{stat.pokeStat}}Input"
+            placeholder="enter amount" formControlName="male{{stat?.pokeStat}}" required>
           <div class="invalid-input" *ngIf="!isValidInput('male' + stat.pokeStat)">Please Enter a Number!</div>
         </div>
       </div>
     </div>
+    <div class="col-sm-2">
+      <h3>Pokemon wanted:</h3>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="" id="idHPcb" formControlName="HPcb">
+        <label class="form-check-label" for="idHPcb">HP</label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="" id="idAtkcb" formControlName="Atkcb">
+        <label class="form-check-label" for="idAtkcb">Attack</label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="" id="idDefcb" formControlName="Defcb">
+        <label class="form-check-label" for="idDefcb">Defense</label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="" id="idSpAcb" formControlName="SpAcb">
+        <label class="form-check-label" for="idSpAcb">Sp. Atk</label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="" id="idSpDcb" formControlName="SpDcb">
+        <label class="form-check-label" for="idSpDcb">Sp. Def</label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="" id="idInicb" formControlName="Inicb">
+        <label class="form-check-label" for="idInicb">Speed</label>
+      </div>
+    </div>
   </div>
-  <button type="submit" class="btn btn-primary" [disabled]="!statsForm.valid">Calculate</button>
-</form>
+  <button type="submit" class="btn btn-primary calc-button" [disabled]="!statsForm.valid">Calculate</button>
 
+</form>

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { AlgorithmService } from './services/algorithm.service';
-import { createPokeCount } from './models/poke-count';
+import { createPokeCount, PokeCount } from './models/poke-count';
 import { Pokemon } from './models/pokemon';
 
 @Component({
@@ -33,4 +33,9 @@ export class AppComponent {
       console.log(e);
     }
  }
+
+  public calculate(result: {pokeCount: PokeCount, pokemon: Pokemon}) {
+    console.log(result.pokeCount);
+    console.log(result.pokemon);
+  }
 }
