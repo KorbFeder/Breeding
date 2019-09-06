@@ -28,9 +28,9 @@ export class AppComponent {
       Def: true,
       SpA: true,
       SpD: true,
-      Ini: false
+      Ini: true
     };
-    const poke = createPokeCount(4, 6, 5, 4, 3, 6, 5, 2, 9, 4, 5, 6);
+    const poke = createPokeCount(10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
     let ret;
     try {
       ret = algorithm.calculate(poke, pokemon);

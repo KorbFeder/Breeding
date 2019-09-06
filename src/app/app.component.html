@@ -1,30 +1,43 @@
 <app-stats-input (calculate)="calculate($event)"></app-stats-input>
-<div *ngFor="let twoStat of bredPokemon?.oneStatMale; let i = index">
-    <app-pokemon-stats 
-        [pokemon]=bredPokemon.oneStatMale[i]
-        [gender]='"male"'>
-    </app-pokemon-stats>
-    <app-pokemon-stats 
-        [pokemon]=bredPokemon.oneStatFemale[i]
-        [gender]='"female"'>
-    </app-pokemon-stats>
+<div class="row align-items-center">
+    <div class="col-sm-2">
+        <div *ngFor="let twoStat of bredPokemon?.oneStatMale; let i = index">
+            <app-pokemon-stats 
+                [pokemon]=bredPokemon.oneStatMale[i]
+                [gender]='"male"'>
+            </app-pokemon-stats>
+            <app-pokemon-stats 
+                [pokemon]=bredPokemon.oneStatFemale[i]
+                [gender]='"female"'>
+            </app-pokemon-stats>
+        </div>
+    </div>
+    <div class="col-sm-2">
+        <div class="twoStat" *ngFor="let twoStat of bredPokemon?.twoStat">
+            <app-pokemon-stats [pokemon]=twoStat></app-pokemon-stats>
+        </div>
+    </div>
+    <div class="col-sm-2">
+        <div class="threeStat" *ngFor="let threeStat of bredPokemon?.threeStat">
+            <app-pokemon-stats [pokemon]=threeStat></app-pokemon-stats>
+        </div>
+    </div>
+    <div class="col-sm-2">
+        <div class="fourStat" *ngFor="let fourStat of bredPokemon?.fourStat">
+            <app-pokemon-stats [pokemon]=fourStat></app-pokemon-stats>
+        </div>
+    </div>
+    <div class="col-sm-2">
+        <div class="fiveStat" *ngFor="let fiveStat of bredPokemon?.fiveStat">
+            <app-pokemon-stats [pokemon]=fiveStat></app-pokemon-stats>
+        </div>
+    </div>
+    <div class="col-sm-2">
+        <div *ngFor="let sixStat of bredPokemon?.sixStat">
+            <app-pokemon-stats [pokemon]=sixStat></app-pokemon-stats>
+        </div>
+    </div>
 </div>
-<div *ngFor="let twoStat of bredPokemon?.twoStat">
-    <app-pokemon-stats [pokemon]=twoStat></app-pokemon-stats>
-</div>
-<div *ngFor="let threeStat of bredPokemon?.threeStat">
-    <app-pokemon-stats [pokemon]=threeStat></app-pokemon-stats>
-</div>
-<div *ngFor="let fourStat of bredPokemon?.fourStat">
-    <app-pokemon-stats [pokemon]=fourStat></app-pokemon-stats>
-</div>
-<div *ngFor="let fiveStat of bredPokemon?.fiveStat">
-    <app-pokemon-stats [pokemon]=fiveStat></app-pokemon-stats>
-</div>
-<div *ngFor="let sixStat of bredPokemon?.sixStat">
-    <app-pokemon-stats [pokemon]=sixStat></app-pokemon-stats>
-</div>
-
 
 
 

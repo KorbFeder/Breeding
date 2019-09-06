@@ -13,16 +13,16 @@ export class StatsInputComponent implements OnInit {
   public calculate = new EventEmitter();
 
   statsForm: FormGroup;
-  pokeCount: PokeCount = createPokeCount(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  pokeCount: PokeCount = createPokeCount(10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
 
   constructor() {
     this.statsForm = new FormGroup({
-      HPcb: new FormControl(false),
-      Atkcb: new FormControl(false),
-      Defcb: new FormControl(false),
-      SpAcb: new FormControl(false),
-      SpDcb: new FormControl(false),
-      Inicb: new FormControl(false)
+      HPcb: new FormControl(true),
+      Atkcb: new FormControl(true),
+      Defcb: new FormControl(true),
+      SpAcb: new FormControl(true),
+      SpDcb: new FormControl(true),
+      Inicb: new FormControl(true)
     });
     for (let poke of this.pokeCount.female) {
       this.statsForm.registerControl('female' + poke.pokeStat, new FormControl(poke.count));
