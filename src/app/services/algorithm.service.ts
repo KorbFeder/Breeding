@@ -10,6 +10,8 @@ export class AlgorithmService {
   female: StatCount;
   male: StatCount;
 
+  oneStatPokemonMale: Pokemon[] = [];
+  oneStatPokemonFemale: Pokemon[] = [];
   twoStatPokemon: Pokemon[] = [];
   threeStatPokemon: Pokemon[] = [];
   fourStatPokemon: Pokemon[] = [];
@@ -31,6 +33,8 @@ export class AlgorithmService {
    * @param wantedPkmn The Pokemon wanted to be created
    */
   public calculate(pokeCount: PokeCount, wantedPkmn: Pokemon): {
+    oneStatMale: Pokemon[],
+    oneStatFemale: Pokemon[],
     twoStat: Pokemon[],
     threeStat: Pokemon[],
     fourStat: Pokemon[],
@@ -42,6 +46,8 @@ export class AlgorithmService {
     const count = this.wantedPokemonCount();
 
     // Since the service is a singleton, it needs to be initialized again.
+    this.oneStatPokemonMale = [];
+    this.oneStatPokemonFemale = [];
     this.twoStatPokemon = [];
     this.threeStatPokemon = [];
     this.fourStatPokemon = [];
@@ -99,6 +105,8 @@ export class AlgorithmService {
         break;
     }
     return {
+      oneStatMale: this.oneStatPokemonMale,
+      oneStatFemale: this.oneStatPokemonFemale,
       twoStat: this.twoStatPokemon,
       threeStat: this.threeStatPokemon,
       fourStat: this.fourStatPokemon,
@@ -282,6 +290,8 @@ export class AlgorithmService {
     if (this.female.count < 0 || this.male.count < 0) {
       throw Error('no more breeders');
     }
+    this.oneStatPokemonFemale.push(createPokemon(this.female.pokeStat));
+    this.oneStatPokemonMale.push(createPokemon(this.male.pokeStat));
     return {male: createPokemon(this.male.pokeStat), female: createPokemon(this.female.pokeStat)};
 
   }
