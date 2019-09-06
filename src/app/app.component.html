@@ -1,4 +1,14 @@
 <app-stats-input (calculate)="calculate($event)"></app-stats-input>
+<div *ngFor="let twoStat of bredPokemon?.oneStatMale; let i = index">
+    <app-pokemon-stats 
+        [pokemon]=bredPokemon.oneStatMale[i]
+        [gender]='"male"'>
+    </app-pokemon-stats>
+    <app-pokemon-stats 
+        [pokemon]=bredPokemon.oneStatFemale[i]
+        [gender]='"female"'>
+    </app-pokemon-stats>
+</div>
 <div *ngFor="let twoStat of bredPokemon?.twoStat">
     <app-pokemon-stats [pokemon]=twoStat></app-pokemon-stats>
 </div>

@@ -10,6 +10,9 @@ export class PokemonStatsComponent implements OnInit {
   @Input()
   pokemon: Pokemon;
 
+  @Input()
+  gender = null;
+
   constructor() { }
 
   ngOnInit() {

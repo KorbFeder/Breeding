@@ -10,13 +10,15 @@ import { Pokemon } from './models/pokemon';
 })
 export class AppComponent {
   public bredPokemon: {
-      twoStat: Pokemon[],
-      threeStat: Pokemon[],
-      fourStat: Pokemon[],
-      fiveStat: Pokemon[],
-      sixStat: Pokemon[],
-      count: PokeCount
-  };
+    oneStatMale: Pokemon[],
+    oneStatFemale: Pokemon[],
+    twoStat: Pokemon[],
+    threeStat: Pokemon[],
+    fourStat: Pokemon[],
+    fiveStat: Pokemon[],
+    sixStat: Pokemon[],
+    count: PokeCount
+};
 
   constructor(private algorithm: AlgorithmService) {
 
