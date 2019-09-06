@@ -1,0 +1,26 @@
+<form [formGroup]=statsForm (ngSubmit)="saveStats(statsForm.value)">
+  <div class="row">
+    <div class="col-sm">
+      <h3>Female:</h3>
+      <div class="form-group row" *ngFor="let stat of pokeCount.female">
+        <label for="female{{stat.pokeStat}}Input" class="col-sm-2 col-from-label">{{stat.pokeStat}}</label> 
+        <div class="col-sm-10">
+          <input type="number" class="form-control" id="female{{stat.pokeStat}}Input" placeholder="enter amount" formControlName="female{{stat?.pokeStat}}" required>
+          <div class="invalid-input" *ngIf="!isValidInput('female' + stat.pokeStat)">Please Enter a Number!</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm">
+      <h3>Male:</h3>
+      <div class="form-group row" *ngFor="let stat of pokeCount.male">
+        <label for="male{{stat.pokeStat}}Input" class="col-sm-2 col-from-label">{{stat.pokeStat}}</label> 
+        <div class="col-sm-10">
+          <input type="number" class="form-control" id="male{{stat.pokeStat}}Input" placeholder="enter amount" formControlName="male{{stat?.pokeStat}}" required>
+          <div class="invalid-input" *ngIf="!isValidInput('male' + stat.pokeStat)">Please Enter a Number!</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button type="submit" class="btn btn-primary" [disabled]="!statsForm.valid">Calculate</button>
+</form>
+

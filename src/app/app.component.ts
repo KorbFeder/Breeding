@@ -9,9 +9,9 @@ import { Pokemon } from './models/pokemon';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'Breeding';
 
   constructor(private algorithm: AlgorithmService) {
+
     const pokemon: Pokemon = {
       HP: true,
       Atk: true,
