@@ -3,6 +3,10 @@ import { PokeCount, StatCount } from '../models/poke-count';
 import { Pokemon, createPokemon, combinePokemon } from '../models/pokemon';
 import { BreedingResult } from '../models/breeding-result';
 
+/**
+ * Breeding service, calculates the breeding of a pokemon, by trying to use the given breeders and a Pokemon
+ * with stats, which the result should have.
+ */
 @Injectable({
   providedIn: 'root'
 })
@@ -11,11 +15,21 @@ export class BreedingService {
   private pokeCount: PokeCount;
   constructor() { }
 
+  /**
+   * This function takes in the breeders and the pokemon which should be the result. It tries to breed the result
+   * pokemon and gives back the step by step pokemon which are needed for breeding.
+   * Returns a BreedingResult object, which holds all the oneStat, twoStat up to sixStat pokemon that were
+   * bred and used for the next breeds.
+   *
+   * @param pokeCount The current count of breeders available
+   * @param wantedPokemon The pokemon which should be the end result
+   */
   public calculate(pokeCount: PokeCount, wantedPokemon: Pokemon): BreedingResult {
     this.pokeCount = Object.assign({}, pokeCount);
     const wantedPokemonStatsSet = this.wantedPokemonCount(wantedPokemon);
     this.eliminateUnwantedStats(wantedPokemon);
 
+    // Initialize the BreedingResult object here, since the service is a singleton (old data might be stored else).
     this.breedRes = {
       oneStatFemale: [],
       oneStatMale: [],
@@ -27,32 +41,46 @@ export class BreedingService {
       count: this.pokeCount
     };
 
-    switch (wantedPokemonStatsSet) {
-      case 0:
-        break;
-      case 1:
-        // TODO -> 1 send back oneStat
-        break;
-      case 2:
-        this.breedRes.twoStat.push(this.choosePokemon());
-        break;
-      case 3:
-        this.createThreeStat();
-        break;
-      case 4:
-        this.createFourStatPokemon();
-        break;
-      case 5:
-        this.createFiveStatPokemon();
-        break;
-      case 6:
-        this.createSixStatPokemon();
-        break;
+    try{
+      // Depending on how much stats the user sent, the corresponding pokemon is getting bred.
+      switch (wantedPokemonStatsSet) {
+        case 0:
+          break;
+        case 1:
+          // TODO -> 1 send back oneStat
+          break;
+        case 2:
+          this.breedRes.twoStat.push(this.choosePokemon());
+          break;
+        case 3:
+          this.createThreeStat();
+          break;
+        case 4:
+          this.createFourStatPokemon();
+          break;
+        case 5:
+          this.createFiveStatPokemon();
+          break;
+        case 6:
+          this.createSixStatPokemon();
+          break;
+      }
+    } catch (e) {
+      if (e.message === 'zero breeders') {
+        return this.breedRes;
+      }
     }
 
     return this.breedRes;
   }
 
+  /**
+   * This function creates a Pokemon with 3 stats.
+   * It will also create 2 Pokemon with 2 stats, as well as 4 Pokemon with one stat.
+   * The pokemon will be pushed into the breedRes object.
+   *
+   * @param predecessor the Pokemon which was directly created beforehand.
+   */
   private createThreeStat(predecessor: Pokemon = null): void {
     let restrictions = null;
     if (predecessor) {
@@ -61,10 +89,14 @@ export class BreedingService {
     this.breedRes.twoStat.push(this.choosePokemon(restrictions));
     restrictions = this.createRestrictions(this.breedRes.twoStat[this.breedRes.twoStat.length - 1], predecessor);
     this.breedRes.twoStat.push(this.choosePokemon(restrictions));
+
     this.breedRes.threeStat.push(
       combinePokemon(this.breedRes.twoStat[this.breedRes.twoStat.length - 1], this.breedRes.twoStat[this.breedRes.twoStat.length - 2]));
   }
 
+  /**
+   * This function creates a 4 stat pokemon.
+   */
   private createFourStatPokemon(): void {
     this.createThreeStat();
     this.createThreeStat(this.breedRes.threeStat[this.breedRes.threeStat.length - 1]);
@@ -74,6 +106,10 @@ export class BreedingService {
         this.breedRes.threeStat[this.breedRes.threeStat.length - 2]));
   }
 
+  /**
+   * This function creates a 5 stat pokemon.
+   * TODO -> minimize the function.
+   */
   private createFiveStatPokemon(): void {
     this.createFourStatPokemon();
     this.createThreeStat(this.breedRes.fourStat[this.breedRes.fourStat.length - 1]);
@@ -104,7 +140,11 @@ export class BreedingService {
       combinePokemon(this.breedRes.fourStat[this.breedRes.fourStat.length - 1], this.breedRes.fourStat[this.breedRes.fourStat.length - 2]));
   }
 
-  private createSixStatPokemon(): void{
+  /**
+   * This function creates a six stat pokemon.
+   * TODO -> minimize the function
+   */
+  private createSixStatPokemon(): void {
     this.createFiveStatPokemon();
 
     this.createThreeStat(this.breedRes.fiveStat[this.breedRes.fiveStat.length - 1]);
@@ -144,9 +184,28 @@ export class BreedingService {
     this.breedRes.sixStat.push(combinePokemon(this.breedRes.fiveStat[0], this.breedRes.fiveStat[1]));
   }
 
+  /**
+   * This function creates restrictions under which conditions the pokemon can choose its stats.
+   * Example:
+   * predecessor:
+   * HP: true
+   * Atk: true
+   * Def: false
+   * SpA: false
+   * SpD: false
+   * Ini: false
+   * 
+   * Since the merge should still be doable, there will be a restriction object which has alreadySetStat, which would be
+   * HP and Atk and a notYetSetStat that would be the rest.
+   * If a highStatPokemon is given, than notYetSet will have to take this one into consideration.
+   *
+   * @param predecessor The Pokemon which came directly before
+   * @param highStatPokemon A Pokemon that will be merged in in the future and is relevant for this one
+   */
   private createRestrictions(predecessor: Pokemon, highStatPokemon: Pokemon = null): {alreadySetStat: Pokemon, notYetSetStat: Pokemon} {
     const alreadySetStat = Object.assign({}, predecessor);
     let notYetSetStat;
+    // If there is no highStatPokemon given
     if (highStatPokemon === null) {
       notYetSetStat = this.invertPkmToPool(predecessor);
     } else {
@@ -157,18 +216,30 @@ export class BreedingService {
         }
       }
     }
-
     return {alreadySetStat, notYetSetStat};
   }
 
+  /**
+   * This function chooses 2 Pokemon and merges them into a two Stat pokemon, which gets than returned.
+   * It will also push the oneStat pokemon into the breedRes object, to know the gender of the used pokemon.
+   * The restriction object restricts the stat which can be picked for a pokemon. For Example:
+   *
+   * alreadySetStat: HP, Atk
+   * notSetYetStat: Def, SpA, SpD, Ini
+   *
+   * Than one of the two pokemon can only be from alreadySetStat and the other one from notYetSetStat.
+   *
+   * If the count of pokemon would fall below 0, than an error will be thrown, that there are no more breeders available.
+   *
+   * @param restr the restriction object, which helps, the function know which pokemon must be chosen
+   */
   private choosePokemon(restr: {alreadySetStat: Pokemon, notYetSetStat: Pokemon } = null): Pokemon {
+    // Sort the breeders, to pick the ones that have the most pokemon of one stat
     this.pokeCount.female.sort(this.comparator);
     this.pokeCount.male.sort(this.comparator);
 
-    // Filters all stats that are not set in either alreadySetStat and notYetStat
     let male = [...this.pokeCount.male][0];
     let female = [...this.pokeCount.female][0];
-
 
     // If there were pokemon input that restrict the choosing of the pokemon
     if (restr) {
@@ -197,6 +268,7 @@ export class BreedingService {
       }
     }
 
+    // Decrement the breeder count
     this.pokeCount.male.forEach(stat => {
       if (stat.pokeStat === male.pokeStat) {
         stat.count--;
@@ -209,19 +281,37 @@ export class BreedingService {
         female.count--;
       }
     });
+    // If the breeder count would fall below 0 than the breed will be unsuccessful.
     if (male.count < 0 || female.count < 0) {
-      return null;
+      throw Error('zero breeders');
     }
 
     const femalePokemon = createPokemon(female.pokeStat);
     const malePokemon = createPokemon(male.pokeStat);
 
+    // Push the created pokemon into the breedRes object to keep track of the gender
     this.breedRes.oneStatFemale.push(femalePokemon);
     this.breedRes.oneStatMale.push(malePokemon);
 
     return combinePokemon(malePokemon, femalePokemon);
   }
 
+  /**
+   * This function changes the stats of pokemon, to their right group.
+   * For example:
+   * the most males would be HP, and the most female would be Atk
+   *
+   * restrictions:
+   * alreadySet: HP, Atk
+   * NotYetSet: DEF, Ini, SpA, SpD
+   *
+   * Both pokemon would be in the same group so one has be moved to the other, this function decides this.
+   *
+   * @param fromStat The stat-group which both pokemon are part of
+   * @param toStat The stat-group one has to be moved to
+   * @param male The male pokemon that was chosen beforehand
+   * @param female The female pokemon that was chosen beforehand
+   */
   private changeStats(fromStat: Pokemon, toStat: Pokemon, male: StatCount, female: StatCount): {male: StatCount, female: StatCount} {
     const toStatFemale = this.pokeCount.female.filter((stat) => toStat[stat.pokeStat]);
     const toStatMale = this.pokeCount.male.filter((stat) => toStat[stat.pokeStat]);
@@ -330,6 +420,21 @@ export class BreedingService {
     return count;
   }
 
+  /**
+   * Eliminates the stats, that aren't relevant for the breed.
+   * For Example:
+   * wantedPokemon:
+   * HP: true
+   * Atk: true
+   * Def: true
+   * SpD: true
+   * SpA: false
+   * Ini: false
+   * 
+   * than the SpA and Ini get removed from the count object for this breed.
+   * 
+   * @param wantedPokemon The wanted pokemon form the user
+   */
   private eliminateUnwantedStats(wantedPokemon: Pokemon): void {
     for (const property in wantedPokemon) {
       if (wantedPokemon[property] === false) {
