@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { AlgorithmService } from './services/algorithm.service';
 import { createPokeCount, PokeCount } from './models/poke-count';
 import { Pokemon } from './models/pokemon';
+import { BreedingService } from './services/breeding.service';
+import { BreedingResult } from './models/breeding-result';
 
 @Component({
   selector: 'app-root',
@@ -9,45 +11,17 @@ import { Pokemon } from './models/pokemon';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  public bredPokemon: {
-    oneStatMale: Pokemon[],
-    oneStatFemale: Pokemon[],
-    twoStat: Pokemon[],
-    threeStat: Pokemon[],
-    fourStat: Pokemon[],
-    fiveStat: Pokemon[],
-    sixStat: Pokemon[],
-    count: PokeCount
-};
+  public bredPokemon: BreedingResult;
 
-  constructor(private algorithm: AlgorithmService) {
+  constructor(private algorithm: AlgorithmService,
+              private breedService: BreedingService) {
 
-    const pokemon: Pokemon = {
-      HP: true,
-      Atk: true,
-      Def: true,
-      SpA: true,
-      SpD: true,
-      Ini: true
-    };
-    const poke = createPokeCount(10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
-    let ret;
-    try {
-      ret = algorithm.calculate(poke, pokemon);
-      console.log(ret.twoStat);
-      console.log(ret.threeStat);
-      console.log(ret.fourStat);
-      console.log(ret.fiveStat);
-      console.log(ret.sixStat);
-    } catch (e) {
-      console.log(e);
-    }
- }
+  }
 
   public calculate(result: {pokeCount: PokeCount, pokemon: Pokemon}) {
     console.log(result.pokeCount);
     console.log(result.pokemon);
-    this.bredPokemon = this.algorithm.calculate(result.pokeCount, result.pokemon);
+    this.bredPokemon = this.breedService.calculate(result.pokeCount, result.pokemon);
     console.log(this.bredPokemon);
   }
 }
